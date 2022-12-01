@@ -1,6 +1,6 @@
-import { format } from 'date-fns';
-import { v4 as uuid } from 'uuid';
-import PerfectScrollbar from 'react-perfect-scrollbar';
+import { format } from "date-fns";
+import { v4 as uuid } from "uuid";
+import PerfectScrollbar from "react-perfect-scrollbar";
 import {
   Box,
   Button,
@@ -12,151 +12,162 @@ import {
   TableHead,
   TableRow,
   TableSortLabel,
-  Tooltip
-} from '@mui/material';
-import ArrowRightIcon from '@mui/icons-material/ArrowRight';
-import { SeverityPill } from '../severity-pill';
+  Tooltip,
+  Snackbar,
+  Alert,
+} from "@mui/material";
+import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import { SeverityPill } from "../severity-pill";
+import { ORDER_STATUS } from "src/utils/constant";
+import DoneIcon from "@mui/icons-material/Done";
+import EastIcon from "@mui/icons-material/East";
+import CloseIcon from "@mui/icons-material/Close";
+import IconButton from "@mui/material/IconButton";
+import { updateOrder } from "src/utils/api";
+import { useState } from "react";
 
-const orders = [
-  {
-    id: uuid(),
-    ref: 'CDD1049',
-    amount: 30.5,
-    customer: {
-      name: 'Ekaterina Tankova'
-    },
-    createdAt: 1555016400000,
-    status: 'pending'
-  },
-  {
-    id: uuid(),
-    ref: 'CDD1048',
-    amount: 25.1,
-    customer: {
-      name: 'Cao Yu'
-    },
-    createdAt: 1555016400000,
-    status: 'delivered'
-  },
-  {
-    id: uuid(),
-    ref: 'CDD1047',
-    amount: 10.99,
-    customer: {
-      name: 'Alexa Richardson'
-    },
-    createdAt: 1554930000000,
-    status: 'refunded'
-  },
-  {
-    id: uuid(),
-    ref: 'CDD1046',
-    amount: 96.43,
-    customer: {
-      name: 'Anje Keizer'
-    },
-    createdAt: 1554757200000,
-    status: 'pending'
-  },
-  {
-    id: uuid(),
-    ref: 'CDD1045',
-    amount: 32.54,
-    customer: {
-      name: 'Clarke Gillebert'
-    },
-    createdAt: 1554670800000,
-    status: 'delivered'
-  },
-  {
-    id: uuid(),
-    ref: 'CDD1044',
-    amount: 16.76,
-    customer: {
-      name: 'Adam Denisov'
-    },
-    createdAt: 1554670800000,
-    status: 'delivered'
-  }
-];
+export const LatestOrders = ({ latestOrders, ...rest }) => {
+  const [ordersList, setOrdersList] = useState(latestOrders);
+  const [snackBar, setSnackBar] = useState({ message: "", severity: "error" });
+  const [loading, setLoading] = useState(false);
 
-export const LatestOrders = (props) => (
-  <Card {...props}>
-    <CardHeader title="Latest Orders" />
-    <PerfectScrollbar>
-      <Box sx={{ minWidth: 800 }}>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>
-                Order Ref
-              </TableCell>
-              <TableCell>
-                Customer
-              </TableCell>
-              <TableCell sortDirection="desc">
-                <Tooltip
-                  enterDelay={300}
-                  title="Sort"
-                >
-                  <TableSortLabel
-                    active
-                    direction="desc"
-                  >
-                    Date
-                  </TableSortLabel>
-                </Tooltip>
-              </TableCell>
-              <TableCell>
-                Status
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {orders.map((order) => (
-              <TableRow
-                hover
-                key={order.id}
-              >
-                <TableCell>
-                  {order.ref}
-                </TableCell>
-                <TableCell>
-                  {order.customer.name}
-                </TableCell>
-                <TableCell>
-                  {format(order.createdAt, 'dd/MM/yyyy')}
-                </TableCell>
-                <TableCell>
-                  <SeverityPill
-                    color={(order.status === 'delivered' && 'success')
-                    || (order.status === 'refunded' && 'error')
-                    || 'warning'}
-                  >
-                    {order.status}
-                  </SeverityPill>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </Box>
-    </PerfectScrollbar>
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'flex-end',
-        p: 2
-      }}
-    >
-      <Button
-        color="primary"
-        endIcon={<ArrowRightIcon fontSize="small" />}
-        size="small"
-        variant="text"
+  const handleUpdateStatus = async (orderId, userId, status, idx) => {
+    setSnackBar({ message: "Updating order!", severity: "info" });
+    await updateOrder({ orderId, userId, status })
+      .then(() => {
+        const temp = [...ordersList];
+        temp[idx].status = status;
+        setOrdersList(temp);
+        setSnackBar({ message: "Update status successful!!!", severity: "success" });
+      })
+      .catch((e) => {
+        setSnackBar({ message: "Update error: " + e, severity: "error" });
+      });
+  };
+
+  return (
+    <Card {...rest}>
+      <Snackbar
+        open={!!snackBar.message}
+        autoHideDuration={6000}
+        onClose={() => {
+          setSnackBar({ message: "", severity: "info" });
+        }}
       >
-        View all
-      </Button>
-    </Box>
-  </Card>
-);
+        <Alert
+          onClose={() => {
+            setSnackBar({ message: "", severity: "info" });
+          }}
+          severity={snackBar.severity}
+          sx={{ width: "100%" }}
+        >
+          {snackBar.message}
+        </Alert>
+      </Snackbar>
+      <CardHeader title="Latest Orders" />
+      <PerfectScrollbar>
+        <Box sx={{ minWidth: 800, overflowX: "auto" }}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Order Ref</TableCell>
+                <TableCell>Customer</TableCell>
+                <TableCell sortDirection="desc" sx={{ textAlign: "center" }}>
+                  <Tooltip enterDelay={300} title="Sort">
+                    <TableSortLabel active direction="desc">
+                      Total cost
+                    </TableSortLabel>
+                  </Tooltip>
+                </TableCell>
+                <TableCell sortDirection="desc" sx={{ textAlign: "center" }}>
+                  <Tooltip enterDelay={300} title="Sort">
+                    <TableSortLabel active direction="desc">
+                      Date
+                    </TableSortLabel>
+                  </Tooltip>
+                </TableCell>
+                <TableCell sx={{ textAlign: "center" }}>Status</TableCell>
+                <TableCell sx={{ textAlign: "right", px: 4 }}>Action</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {ordersList.map((order, idx) => (
+                <TableRow hover key={order._id}>
+                  <TableCell>{order._id}</TableCell>
+                  <TableCell>
+                    {order.customer.firstName} {order.customer.lastName}
+                  </TableCell>
+                  <TableCell sx={{ textAlign: "center" }}>{order.totalCost}</TableCell>
+                  <TableCell sx={{ textAlign: "center" }}>
+                    {format(order.createdAt ? order.createdAt : new Date(), "dd/MM/yyyy")}
+                  </TableCell>
+                  <TableCell sx={{ textAlign: "center" }}>
+                    <SeverityPill
+                      color={
+                        (order.status < 2 && "warning") ||
+                        (order.status == 2 && "info") ||
+                        (order.status == 3 && "secondary") ||
+                        (order.status == 4 && "success") ||
+                        "error"
+                      }
+                    >
+                      {ORDER_STATUS[order.status]}
+                    </SeverityPill>
+                  </TableCell>
+
+                  <TableCell sx={{ textAlign: "right" }}>
+                    {order.status < 2 ? (
+                      <>
+                        <Tooltip enterDelay={300} title={loading ? "Processing" : "Decline"}>
+                          <IconButton
+                            color="info"
+                            onClick={() => handleUpdateStatus(order._id, order.userId, 5, idx)}
+                            disabled={loading}
+                          >
+                            <CloseIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip enterDelay={300} title={loading ? "Processing" : "Accept"}>
+                          <IconButton
+                            color="info"
+                            disabled={loading}
+                            onClick={() => handleUpdateStatus(order._id, order.userId, 2, idx)}
+                          >
+                            <DoneIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      </>
+                    ) : (
+                      <></>
+                    )}
+                    <Tooltip enterDelay={300} title={loading ? "Processing" : "Detail"}>
+                      <IconButton color="info" disabled={loading}>
+                        <EastIcon fontSize="small" />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Box>
+      </PerfectScrollbar>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+          p: 2,
+        }}
+      >
+        <Button
+          color="primary"
+          endIcon={<ArrowRightIcon fontSize="small" />}
+          size="small"
+          variant="text"
+        >
+          View all
+        </Button>
+      </Box>
+    </Card>
+  );
+};
