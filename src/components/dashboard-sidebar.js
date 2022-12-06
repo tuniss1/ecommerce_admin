@@ -32,7 +32,7 @@ const items = [
   },
   {
     href: "/orders",
-    icon: <ShoppingBagIcon fontSize="small" />,
+    icon: <AssignmentIcon fontSize="small" />,
     title: "Orders",
   },
   {

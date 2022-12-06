@@ -1,13 +1,12 @@
 import Head from "next/head";
-import { Box, Container } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 import { DashboardLayout } from "src/components/dashboard-layout";
-import { ProductListToolbar } from "src/components/product/product-list-toolbar";
-import { ProductListResults } from "src/components/product/product-list-results";
 import ComponentDialog from "src/components/dialog";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { getProductDetail } from "src/utils/api";
+import { deleteProduct, getProductDetail } from "src/utils/api";
 import { useRouter } from "next/router";
+import ProductDetailView from "src/components/product/product-detail";
 
 const Page = () => {
   const router = useRouter();
@@ -15,9 +14,11 @@ const Page = () => {
 
   const productSlice = useSelector((state) => state.products);
   const [product, setProduct] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
+      setLoading(true);
       const id = router.query.id;
       if (productSlice.products.hasOwnProperty(id)) {
         setProduct(productSlice.products[id]);
@@ -27,22 +28,35 @@ const Page = () => {
           setProduct(data);
         });
       }
+      setLoading(false);
     };
 
     fetchData();
   }, [router]);
 
+  console.log(product);
+
   const handleYes = async () => {
+    await deleteProduct({ _id: [product._id] }).then((res) => {
+      console.log(res.status);
+    });
+
     setOpen(false);
+    router.push("/products");
   };
 
   const handleNo = () => {
     setOpen(false);
   };
 
+  const handleDelete = () => {
+    setOpen(true);
+  };
+
   const DetailResultsProps = {
     product,
-    isEdit: false,
+    handleDelete,
+    mode: 2,
   };
 
   const DialogProps = {
@@ -53,7 +67,7 @@ const Page = () => {
     noColor: "primary",
     yes: "Remove",
     no: "Cancel",
-    title: "Doyou want to delete this product?",
+    title: "Do you want to delete this product?",
   };
 
   return (
@@ -65,12 +79,20 @@ const Page = () => {
         component="main"
         sx={{
           flexGrow: 1,
-          py: 8,
         }}
       >
         <Container maxWidth={false}>
-          <Box sx={{ mt: 3 }}></Box>
+          <Typography variant="h3" sx={{ mt: 3 }}>
+            Product
+          </Typography>
         </Container>
+        {loading ? (
+          <></>
+        ) : (
+          <Box sx={{ mt: 3 }}>
+            <ProductDetailView {...DetailResultsProps} />
+          </Box>
+        )}
         <ComponentDialog {...DialogProps} />
       </Box>
     </>

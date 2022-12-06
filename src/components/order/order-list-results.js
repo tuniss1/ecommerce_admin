@@ -33,7 +33,7 @@ import { fetchOrders, setOrderByCacheId } from "src/store/reducers/orderSlice";
 import TableSkelton from "../skeleton";
 
 export const OrderListResults = ({ orders, ...rest }) => {
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
 
   const [open, setOpen] = useState(false);
@@ -197,7 +197,7 @@ export const OrderListResults = ({ orders, ...rest }) => {
         onRowsPerPageChange={handleLimitChange}
         page={page - 1}
         rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[10, 25, 50]}
       />
     </Card>
   );

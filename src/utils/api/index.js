@@ -20,6 +20,15 @@ export const signUp = async (values) => {
     .catch((e) => console.log(e));
 };
 
+export const createProduct = async (values) => {
+  return await axios
+    .post(`${baseUrl}/api/product/create`, values)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((e) => console.log(e));
+};
+
 export const getProduct = async (params) => {
   return await axios
     .get(`${baseUrl}/api/product`, { params: params })
@@ -56,9 +65,54 @@ export const getProductList = async (params) => {
     .catch((e) => console.log(e));
 };
 
+export const updateProduct = async (values) => {
+  return await axios
+    .post(`${baseUrl}/api/product/update`, values)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((e) => console.log(e));
+};
+
+export const deleteProduct = async (values) => {
+  return await axios
+    .post(`${baseUrl}/api/product/delete`, values)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((e) => console.log(e));
+};
+
 export const truncateProduct = async () => {
   return await axios
     .get(`${baseUrl}/api/product/truncate`)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((e) => console.log(e));
+};
+
+export const createCategory = async (values) => {
+  return await axios
+    .post(`${baseUrl}/api/category/create`, values)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((e) => console.log(e));
+};
+
+export const updateCategory = async (values) => {
+  return await axios
+    .post(`${baseUrl}/api/category/update`, values)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((e) => console.log(e));
+};
+
+export const deleteCategory = async (values) => {
+  return await axios
+    .post(`${baseUrl}/api/category/delete`, values)
     .then((res) => {
       return res.data;
     })

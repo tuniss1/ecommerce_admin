@@ -198,6 +198,18 @@ export const theme = createTheme({
       dark: "#616161",
       contrastText: "#FFFFFF",
     },
+    custom: {
+      main: "#121828",
+      light: "#D14343",
+      dark: "#F9FAFC",
+      contrastText: "#FFFFFF",
+    },
+    customLight: {
+      main: "#fff",
+      light: "#D14343",
+      dark: "#F9FAFC",
+      contrastText: "#FFFFFF",
+    },
     text: {
       primary: "#121828",
       secondary: "#65748B",

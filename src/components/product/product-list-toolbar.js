@@ -8,6 +8,7 @@ import {
   SvgIcon,
   Typography,
 } from "@mui/material";
+import Link from "next/link";
 import { useState } from "react";
 import { Download as DownloadIcon } from "../../icons/download";
 import { Search as SearchIcon } from "../../icons/search";
@@ -46,9 +47,11 @@ export const ProductListToolbar = ({ isSelected, setSearchField, setOpen, ...res
           >
             Delete
           </Button>
-          <Button color="primary" variant="contained">
-            Add products
-          </Button>
+          <Link href="/products/create">
+            <Button color="primary" variant="contained">
+              Add products
+            </Button>
+          </Link>
         </Box>
       </Box>
       {/* <Box sx={{ mt: 3 }}>

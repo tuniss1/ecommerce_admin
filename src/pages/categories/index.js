@@ -4,7 +4,7 @@ import { DashboardLayout } from "../../components/dashboard-layout";
 import ComponentDialog from "src/components/dialog";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { truncateCategory } from "src/utils/api";
+import { deleteCategory, truncateCategory } from "src/utils/api";
 import { CategoryListResults } from "src/components/category/category-list-results";
 import { CategoryListToolbar } from "src/components/category/category-list-toolbar";
 
@@ -47,8 +47,11 @@ const Page = () => {
 
   const handleYes = async () => {
     if (isSelectedAll) {
-      const res = await truncateCategory().then((res) => console.log(res.status));
+      await truncateCategory().then((res) => console.log(res.status));
     } else {
+      await deleteCategory({ _id: selectedCategoryIds }).then((res) => {
+        console.log(res.status);
+      });
     }
     setOpen(false);
     setSelectedCategoryIds([]);
@@ -84,7 +87,7 @@ const Page = () => {
     noColor: "primary",
     yes: "Remove",
     no: "Cancel",
-    title: "Doyou want to delete this/these category(s)?",
+    title: "Do you want to delete this/these category(s)?",
   };
 
   return (

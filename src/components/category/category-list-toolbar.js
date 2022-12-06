@@ -7,6 +7,7 @@ import {
   InputAdornment,
   SvgIcon,
   Typography,
+  Link,
 } from "@mui/material";
 import { useState } from "react";
 import { Download as DownloadIcon } from "../../icons/download";
@@ -46,9 +47,11 @@ export const CategoryListToolbar = ({ isSelected, setSearchField, setOpen, ...re
           >
             Delete
           </Button>
-          <Button color="primary" variant="contained">
-            Add category
-          </Button>
+          <Link href="/categories/create">
+            <Button color="primary" variant="contained">
+              Add category
+            </Button>
+          </Link>
         </Box>
       </Box>
       {/* <Box sx={{ mt: 3 }}>

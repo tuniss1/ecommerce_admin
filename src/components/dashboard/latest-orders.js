@@ -25,45 +25,29 @@ import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
 import { updateOrder } from "src/utils/api";
 import { useState } from "react";
+import { useSnackbar } from "notistack";
 
 export const LatestOrders = ({ latestOrders, ...rest }) => {
   const [ordersList, setOrdersList] = useState(latestOrders);
-  const [snackBar, setSnackBar] = useState({ message: "", severity: "error" });
   const [loading, setLoading] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleUpdateStatus = async (orderId, userId, status, idx) => {
-    setSnackBar({ message: "Updating order!", severity: "info" });
+    enqueueSnackbar("Updating order!", { variant: "info" });
     await updateOrder({ orderId, userId, status })
       .then(() => {
         const temp = [...ordersList];
         temp[idx].status = status;
         setOrdersList(temp);
-        setSnackBar({ message: "Update status successful!!!", severity: "success" });
+        enqueueSnackbar("Update status successful!!!", { variant: "success" });
       })
       .catch((e) => {
-        setSnackBar({ message: "Update error: " + e, severity: "error" });
+        enqueueSnackbar("Update error: " + e, { variant: "error" });
       });
   };
 
   return (
     <Card {...rest}>
-      <Snackbar
-        open={!!snackBar.message}
-        autoHideDuration={6000}
-        onClose={() => {
-          setSnackBar({ message: "", severity: "info" });
-        }}
-      >
-        <Alert
-          onClose={() => {
-            setSnackBar({ message: "", severity: "info" });
-          }}
-          severity={snackBar.severity}
-          sx={{ width: "100%" }}
-        >
-          {snackBar.message}
-        </Alert>
-      </Snackbar>
       <CardHeader title="Latest Orders" />
       <PerfectScrollbar>
         <Box sx={{ minWidth: 800, overflowX: "auto" }}>

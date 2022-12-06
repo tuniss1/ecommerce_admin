@@ -31,7 +31,7 @@ export const CategoryListResults = ({
   total_records,
   ...rest
 }) => {
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
 
@@ -132,7 +132,7 @@ export const CategoryListResults = ({
                 </TableCell>
               </TableRow>
             </TableHead>
-            <TableBody sx={{ height: 464.5 }}>
+            <TableBody>
               {loading
                 ? Array(limit / 5).map(() => <TableSkelton />)
                 : categories
@@ -186,7 +186,7 @@ export const CategoryListResults = ({
         onRowsPerPageChange={handleLimitChange}
         page={page - 1}
         rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[10, 25, 50]}
       />
     </Card>
   );

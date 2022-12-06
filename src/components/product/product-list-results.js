@@ -35,7 +35,7 @@ export const ProductListResults = ({
   total_records,
   ...rest
 }) => {
-  const [limit, setLimit] = useState(5);
+  const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
 
@@ -183,7 +183,7 @@ export const ProductListResults = ({
                 </TableCell>
               </TableRow>
             </TableHead>
-            <TableBody sx={{ height: 464.5 }}>
+            <TableBody>
               {loading
                 ? Array(limit / 5).map(() => <TableSkelton />)
                 : products
@@ -210,7 +210,9 @@ export const ProductListResults = ({
                               <Image
                                 src={
                                   product.images && product.images.length
-                                    ? product.images[0]
+                                    ? typeof product.images[0] === "string"
+                                      ? product.images[0]
+                                      : product.images[0].url
                                     : "/static/no-image.png"
                                 }
                                 width={60}
@@ -241,9 +243,11 @@ export const ProductListResults = ({
                             )}
                           </TableCell>
                           <TableCell>
-                            <IconButton color="info">
-                              <EditIcon fontSize="small" />
-                            </IconButton>
+                            <Link href={`/products/${product._id}/edit`}>
+                              <IconButton color="info">
+                                <EditIcon fontSize="small" />
+                              </IconButton>
+                            </Link>
                             <Link href={`/products/${product._id}`}>
                               <IconButton color="info">
                                 <EastIcon fontSize="small" />
@@ -264,7 +268,7 @@ export const ProductListResults = ({
         onRowsPerPageChange={handleLimitChange}
         page={page - 1}
         rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
+        rowsPerPageOptions={[10, 25, 50]}
       />
     </Card>
   );

@@ -6,7 +6,7 @@ import { ProductListResults } from "src/components/product/product-list-results"
 import ComponentDialog from "src/components/dialog";
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import { truncateProduct } from "src/utils/api";
+import { deleteProduct, truncateProduct } from "src/utils/api";
 
 const Page = () => {
   const [open, setOpen] = useState(false);
@@ -47,8 +47,11 @@ const Page = () => {
 
   const handleYes = async () => {
     if (isSelectedAll) {
-      const res = await truncateProduct().then((res) => console.log(res.status));
+      await truncateProduct().then((res) => console.log(res.status));
     } else {
+      await deleteProduct({ _id: selectedProductIds }).then((res) => {
+        console.log(res.status);
+      });
     }
     setOpen(false);
     setSelectedProductIds([]);

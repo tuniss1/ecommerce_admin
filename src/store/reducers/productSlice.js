@@ -1,5 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getProductList } from "src/utils/api";
+import { deleteObject, getDownloadURL, uploadBytes } from "firebase/storage";
+import { imageRef } from "src/lib/firebase";
+import { createProduct as BEcreateProduct, getProductList } from "src/utils/api";
 
 export const initialState = {
   products: {},
@@ -69,6 +71,58 @@ export const fetchProducts = (queries, setLoading) => async (dispatch, getState)
     })
   );
   setLoading(false);
+};
+
+export const createProduct = (product, callback) => async (dispatch, getState) => {
+  console.log("create");
+  const images = product.images;
+  const promisesImgToDel = [];
+  const promisesImgToAdd = [];
+
+  const imageToSaveLst = [];
+  const dataToHold = [];
+
+  for (const image of images) {
+    const storageUrl = image.ref ? image.ref : `public/product/${image.id}${image.format}`;
+    const storageImgRef = imageRef(storageUrl);
+
+    if (image.isDeleted && !image.isSubmitDeleted) {
+      promisesImgToDel.push(deleteObject(storageImgRef));
+    }
+    if (!image.isNew && !image.isDeleted)
+      imageToSaveLst.push({
+        url: image.url,
+      });
+    if (image.isNew && !image.isDeleted) {
+      promisesImgToAdd.push(
+        uploadBytes(storageImgRef, image.file).then(async () => {
+          await getDownloadURL(storageImgRef).then((value) => {
+            dataToHold.push({ id: image.id, url: value, ref: storageUrl });
+          });
+        })
+      );
+    }
+  }
+  await Promise.all(promisesImgToDel)
+    .then(() => {
+      console.log("delete all successful");
+    })
+    .catch((e) => {
+      callback("Something goes wrong!!!", "error");
+      console.log("error" + e);
+    });
+  await Promise.all(promisesImgToAdd)
+    .then(() => {
+      console.log("add all successful");
+    })
+    .catch((e) => {
+      callback("Something goes wrong!!!", "error");
+      console.log("error" + e);
+    });
+
+  const res = await BEcreateProduct({ ...product, images: dataToHold }).then(({ data }) => data);
+  dispatch(ProductSlice.actions.setProducts(res));
+  callback("Add product successful!!!", "success");
 };
 
 export default ProductSlice;

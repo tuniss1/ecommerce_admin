@@ -11,6 +11,7 @@ import { registerChartJs } from "../utils/register-chart-js";
 import { theme } from "../theme";
 import { Provider as ReduxProvider } from "react-redux";
 import store from "../store";
+import { SnackbarProvider } from "notistack";
 
 registerChartJs();
 
@@ -30,15 +31,17 @@ const App = (props) => {
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <ReduxProvider store={store}>
-            <AuthProvider>
-              <AuthConsumer>
-                {(auth) =>
-                  auth.isLoading ? <Fragment /> : getLayout(<Component {...pageProps} />)
-                }
-              </AuthConsumer>
-            </AuthProvider>
-          </ReduxProvider>
+          <SnackbarProvider maxSnack={4}>
+            <ReduxProvider store={store}>
+              <AuthProvider>
+                <AuthConsumer>
+                  {(auth) =>
+                    auth.isLoading ? <Fragment /> : getLayout(<Component {...pageProps} />)
+                  }
+                </AuthConsumer>
+              </AuthProvider>
+            </ReduxProvider>
+          </SnackbarProvider>
         </ThemeProvider>
       </LocalizationProvider>
     </CacheProvider>
