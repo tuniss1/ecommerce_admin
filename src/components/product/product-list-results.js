@@ -51,13 +51,22 @@ export const ProductListResults = ({
 
   useEffect(() => {
     const fetchData = async () => {
-      dispatch(fetchProducts({ page: page, limit: limit }, setLoading));
+      // if (sort.price) {
+      //   setPage(1);
+      //   dispatch(fetchProducts({ page: page, limit: limit, sort: sort.price }, setLoading));
+      // } else {
+      // }
+      dispatch(fetchProducts({ page: page, limit: limit, sort: sort.price }, setLoading));
     };
 
     fetchData();
 
     return () => {};
-  }, [page]);
+  }, [page, sort]);
+
+  // useEffect(() => {
+  //   setPage(1);
+  // }, [sort]);
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -100,35 +109,9 @@ export const ProductListResults = ({
                 </TableCell>
                 <TableCell sx={{ minWidth: 250 }}>Product Ref</TableCell>
                 <TableCell sx={{ minWidth: 400 }}>Name</TableCell>
-                <TableCell sortDirection={sort.category ? sort.category : "desc"}>
-                  <Tooltip enterDelay={300} title="Sort" sx={{ minWidth: 150 }}>
-                    <TableSortLabel
-                      active
-                      direction={sort.category ? sort.category : "desc"}
-                      onClick={() => {
-                        if (sort.category == "asc") setSort({ ...sort, category: "desc" });
-                        else setSort({ ...sort, category: "asc" });
-                      }}
-                    >
-                      Category
-                    </TableSortLabel>
-                  </Tooltip>
-                </TableCell>
+                <TableCell>Category</TableCell>
                 <TableCell>SKU</TableCell>
-                <TableCell sortDirection={sort.quantity ? sort.quantity : "desc"}>
-                  <Tooltip enterDelay={300} title="Sort" sx={{ minWidth: 150 }}>
-                    <TableSortLabel
-                      active
-                      direction={sort.quantity ? sort.quantity : "desc"}
-                      onClick={() => {
-                        if (sort.quantity == "asc") setSort({ ...sort, quantity: "desc" });
-                        else setSort({ ...sort, quantity: "asc" });
-                      }}
-                    >
-                      Remain quantity
-                    </TableSortLabel>
-                  </Tooltip>
-                </TableCell>
+                <TableCell>Remain quantity</TableCell>
                 <TableCell sortDirection={sort.price ? sort.price : "desc"} sx={{ minWidth: 150 }}>
                   <Tooltip enterDelay={300} title="Sort">
                     <TableSortLabel
@@ -144,40 +127,8 @@ export const ProductListResults = ({
                     </TableSortLabel>
                   </Tooltip>
                 </TableCell>
-                <TableCell
-                  sortDirection={sort.createdAt ? sort.createdAt : "desc"}
-                  sx={{ minWidth: 150 }}
-                >
-                  <Tooltip enterDelay={300} title="Sort">
-                    <TableSortLabel
-                      active
-                      direction={sort.createdAt ? sort.createdAt : "desc"}
-                      onClick={() => {
-                        if (sort.createdAt == "asc") setSort({ ...sort, createdAt: "desc" });
-                        else setSort({ ...sort, createdAt: "asc" });
-                      }}
-                    >
-                      Created at
-                    </TableSortLabel>
-                  </Tooltip>
-                </TableCell>
-                <TableCell
-                  sortDirection={sort.updatedAt ? sort.updatedAt : "desc"}
-                  sx={{ minWidth: 150 }}
-                >
-                  <Tooltip enterDelay={300} title="Sort">
-                    <TableSortLabel
-                      active
-                      direction={sort.updatedAt ? sort.updatedAt : "desc"}
-                      onClick={() => {
-                        if (sort.updatedAt == "asc") setSort({ ...sort, updatedAt: "desc" });
-                        else setSort({ ...sort, updatedAt: "asc" });
-                      }}
-                    >
-                      Updated at
-                    </TableSortLabel>
-                  </Tooltip>
-                </TableCell>
+                <TableCell>Created at</TableCell>
+                <TableCell>Updated at</TableCell>
                 <TableCell sortDirection="desc" sx={{ px: 4 }}>
                   Action
                 </TableCell>
@@ -185,8 +136,14 @@ export const ProductListResults = ({
             </TableHead>
             <TableBody>
               {loading
-                ? Array(limit / 5).map(() => <TableSkelton />)
+                ? Array(limit / 5).map((_values, idx) => <TableSkelton key={idx} />)
                 : products
+                    // .sort((a, b) => {
+                    //   if (!sort.price) return 0;
+                    //   if (a[1].price > b[1].price) return 1;
+                    //   if (a[1].price < b[1].price) return -1;
+                    //   return 0;
+                    // })
                     .slice((page - 1) * limit, (page - 1) * limit + limit)
                     .map(([key, product]) => {
                       return (
@@ -213,6 +170,8 @@ export const ProductListResults = ({
                                     ? typeof product.images[0] === "string"
                                       ? product.images[0]
                                       : product.images[0].url
+                                      ? product.images[0].url
+                                      : "/static/no-image.png"
                                     : "/static/no-image.png"
                                 }
                                 width={60}

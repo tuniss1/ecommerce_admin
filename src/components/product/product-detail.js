@@ -23,7 +23,7 @@ import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
 import React, { useState, useRef, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { createProduct } from "src/store/reducers/productSlice";
+import { createProduct, update } from "src/store/reducers/productSlice";
 import * as Yup from "yup";
 import SaveCancelOps from "../save-cancel-ops";
 import ImageZone from "./image-zone";
@@ -74,7 +74,6 @@ const ProductDetailView = ({ product, mode, handleDelete }) => {
     description: Yup.string().required("Description is required."),
     totalQuantity: Yup.number().required("Quantity is required.").min(0),
     images: Yup.array(),
-    categoryName: Yup.string().required("Category is required."),
   });
 
   const initialValues =
@@ -150,6 +149,15 @@ const ProductDetailView = ({ product, mode, handleDelete }) => {
             );
           } else if (mode === 2) {
             router.push(router.asPath + "/edit");
+          } else {
+            dispatch(
+              update(values, (message, severity) => {
+                enqueueSnackbar(message, { variant: severity });
+                if (severity === "success") {
+                  router.push("/products");
+                }
+              })
+            );
           }
         } catch (e) {
           console.log(e);
@@ -261,22 +269,15 @@ const ProductDetailView = ({ product, mode, handleDelete }) => {
                       onClick={handleToggle}
                       variant="outlined"
                       disabled={disabled}
-                      onBlur={() => {
-                        setFieldTouched("categoryName", true);
-                      }}
                       sx={{
                         display: "flex",
                         justifyContent: "space-between",
                         minWidth: 140,
                         width: "100%",
                         height: "56px",
-                        "&:hover": Boolean(touched.categoryName && errors.categoryName)
-                          ? {}
-                          : { border: "1px solid rgba(18, 24, 40, 0.5)" },
+                        "&:hover": { border: "1px solid rgba(18, 24, 40, 0.5)" },
                       }}
-                      color={
-                        Boolean(touched.categoryName && errors.categoryName) ? "error" : "custom"
-                      }
+                      color={"custom"}
                       endIcon={<ArrowDropDownIcon />}
                     >
                       {values.categoryName || "Category"}
@@ -286,11 +287,6 @@ const ProductDetailView = ({ product, mode, handleDelete }) => {
                       anchorEl={anchorRef.current}
                       role={undefined}
                       placement="bottom-start"
-                      onBlur={() => {
-                        if (!values.categoryName) {
-                          setFieldError("categoryName", "Category is required.");
-                        }
-                      }}
                       transition
                       disablePortal
                     >
@@ -328,22 +324,6 @@ const ProductDetailView = ({ product, mode, handleDelete }) => {
                         </Grow>
                       )}
                     </Popper>
-                    {touched.categoryName && errors.categoryName && (
-                      <Typography
-                        color="error"
-                        sx={{
-                          fontSize: "0.75rem",
-                          fontWeight: 400,
-                          lineHeight: 1.66,
-                          marginTop: "3px",
-                          marginRight: "14px",
-                          marginBottom: 0,
-                          marginLeft: "14px",
-                        }}
-                      >
-                        {touched.categoryName && errors.categoryName}
-                      </Typography>
-                    )}
                   </Grid>
                 </Grid>
               </CardContent>

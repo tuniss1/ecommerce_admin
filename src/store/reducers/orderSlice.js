@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getOrders } from "src/utils/api";
+import { getOrders, updateOrder } from "src/utils/api";
 
 export const initialState = {
   orders: {},
@@ -72,6 +72,18 @@ export const fetchOrders = (queries, setLoading) => async (dispatch, getState) =
 };
 
 export const setOrderByCacheId = (order) => async (dispatch, getState) => {
+  dispatch(OrderSlice.actions.setOrderByCacheId(order));
+};
+
+export const update = (order, callback) => async (dispatch, getState) => {
+  callback("Updating order.", "info");
+  await updateOrder({ orderId: order._id, status: order.status })
+    .then(() => {
+      callback("Update order successful!!!", "success");
+    })
+    .catch((e) => {
+      callback("Something goes wrong!!!", "error");
+    });
   dispatch(OrderSlice.actions.setOrderByCacheId(order));
 };
 

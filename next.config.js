@@ -9,6 +9,8 @@ module.exports = {
       "www.thespruce.com",
       "hort.extension.wisc.edu",
       "www.thespruce.com",
+      "s3-alpha-sig.figma.com",
+      "i.imgur.com",
     ],
   },
 };

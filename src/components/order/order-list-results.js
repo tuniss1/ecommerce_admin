@@ -27,10 +27,12 @@ import DoneIcon from "@mui/icons-material/Done";
 import EastIcon from "@mui/icons-material/East";
 import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
+import EditIcon from "@mui/icons-material/Edit";
 import { updateOrder } from "src/utils/api";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchOrders, setOrderByCacheId } from "src/store/reducers/orderSlice";
 import TableSkelton from "../skeleton";
+import Link from "next/link";
 
 export const OrderListResults = ({ orders, ...rest }) => {
   const [limit, setLimit] = useState(10);
@@ -101,17 +103,11 @@ export const OrderListResults = ({ orders, ...rest }) => {
               <TableRow>
                 <TableCell>Order Ref</TableCell>
                 <TableCell>Order</TableCell>
+                <TableCell sx={{ textAlign: "center" }}>Total cost</TableCell>
                 <TableCell sortDirection="desc" sx={{ textAlign: "center" }}>
                   <Tooltip enterDelay={300} title="Sort">
                     <TableSortLabel active direction="desc">
-                      Total cost
-                    </TableSortLabel>
-                  </Tooltip>
-                </TableCell>
-                <TableCell sortDirection="desc" sx={{ textAlign: "center" }}>
-                  <Tooltip enterDelay={300} title="Sort">
-                    <TableSortLabel active direction="desc">
-                      Date
+                      Created date
                     </TableSortLabel>
                   </Tooltip>
                 </TableCell>
@@ -121,7 +117,7 @@ export const OrderListResults = ({ orders, ...rest }) => {
             </TableHead>
             <TableBody>
               {loading
-                ? Array(limit / 5).map(() => <TableSkelton />)
+                ? Array(limit / 5).map((_value, idx) => <TableSkelton key={idx} />)
                 : Object.entries(orderSlice.orders)
                     .slice((page - 1) * limit, (page - 1) * limit + limit)
                     .map(([key, order], idx) => {
@@ -177,11 +173,20 @@ export const OrderListResults = ({ orders, ...rest }) => {
                             ) : (
                               <></>
                             )}
-                            <Tooltip enterDelay={300} title={loading ? "Processing" : "Detail"}>
-                              <IconButton color="info" disabled={loading}>
-                                <EastIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
+                            <Link href={`/orders/${order._id}/edit`}>
+                              <Tooltip enterDelay={300} title={loading ? "Processing" : "Edit"}>
+                                <IconButton color="info" disabled={loading}>
+                                  <EditIcon fontSize="small" />
+                                </IconButton>
+                              </Tooltip>
+                            </Link>
+                            <Link href={`/orders/${order._id}`}>
+                              <Tooltip enterDelay={300} title={loading ? "Processing" : "Detail"}>
+                                <IconButton color="info" disabled={loading}>
+                                  <EastIcon fontSize="small" />
+                                </IconButton>
+                              </Tooltip>
+                            </Link>
                           </TableCell>
                         </TableRow>
                       );

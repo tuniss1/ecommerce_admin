@@ -25,6 +25,7 @@ const SaveCancelOps = ({
         alignItems: "center",
         columnGap: "16px",
         borderTop: "1px solid #E6E8F0",
+        zIndex: 1000,
         [theme.breakpoints.up("lg")]: {
           width: "calc(100% - 280px)",
           right: 0,
@@ -39,7 +40,7 @@ const SaveCancelOps = ({
         {mode === 2 ? "Edit" : "Save"}
       </Button>
 
-      {mode !== 0 && (
+      {mode !== 0 && handleDelete && (
         <Button size="medium" onClick={handleDelete} disabled={isSubmitting} color="error">
           Delete
         </Button>

@@ -20,6 +20,7 @@ import { fetchCategories } from "src/store/reducers/categorySlice";
 import EditIcon from "@mui/icons-material/Edit";
 import EastIcon from "@mui/icons-material/East";
 import TableSkelton from "../skeleton";
+import Link from "next/link";
 
 export const CategoryListResults = ({
   selectedCategoryIds,
@@ -95,23 +96,7 @@ export const CategoryListResults = ({
                 <TableCell sx={{ minWidth: 250 }}>Category Ref</TableCell>
                 <TableCell sx={{ minWidth: 300 }}>Name</TableCell>
 
-                <TableCell
-                  sortDirection={sort.quantity ? sort.quantity : "desc"}
-                  sx={{ textAlign: "center" }}
-                >
-                  <Tooltip enterDelay={300} title="Sort">
-                    <TableSortLabel
-                      active
-                      direction={sort.quantity ? sort.quantity : "desc"}
-                      onClick={() => {
-                        if (sort.quantity == "asc") setSort({ ...sort, quantity: "desc" });
-                        else setSort({ ...sort, quantity: "asc" });
-                      }}
-                    >
-                      Products count
-                    </TableSortLabel>
-                  </Tooltip>
-                </TableCell>
+                <TableCell sx={{ textAlign: "center" }}>Products count</TableCell>
                 <TableCell sortDirection={sort.createdAt ? sort.createdAt : "desc"}>
                   <Tooltip enterDelay={300} title="Sort">
                     <TableSortLabel
@@ -127,14 +112,12 @@ export const CategoryListResults = ({
                   </Tooltip>
                 </TableCell>
 
-                <TableCell sortDirection="desc" sx={{ px: 4 }}>
-                  Action
-                </TableCell>
+                <TableCell sx={{ px: 4 }}>Action</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {loading
-                ? Array(limit / 5).map(() => <TableSkelton />)
+                ? Array(limit / 5).map((_value, idx) => <TableSkelton key={idx} />)
                 : categories
                     .slice((page - 1) * limit, (page - 1) * limit + limit)
                     .map(([key, category]) => {
@@ -165,12 +148,16 @@ export const CategoryListResults = ({
                             )}
                           </TableCell>
                           <TableCell>
-                            <IconButton color="info">
-                              <EditIcon fontSize="small" />
-                            </IconButton>
-                            <IconButton color="info">
-                              <EastIcon fontSize="small" />
-                            </IconButton>
+                            <Link href={`/categories/${category._id}/edit`}>
+                              <IconButton color="info">
+                                <EditIcon fontSize="small" />
+                              </IconButton>
+                            </Link>
+                            <Link href={`/categories/${category._id}`}>
+                              <IconButton color="info">
+                                <EastIcon fontSize="small" />
+                              </IconButton>
+                            </Link>
                           </TableCell>
                         </TableRow>
                       );

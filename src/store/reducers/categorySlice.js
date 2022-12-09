@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { getCategoryList } from "src/utils/api";
+import { createCategory, getCategoryList, updateCategory } from "src/utils/api";
 
 export const initialState = {
   categories: {},
@@ -69,6 +69,30 @@ export const fetchCategories = (queries, setLoading) => async (dispatch, getStat
     })
   );
   setLoading(false);
+};
+
+export const create = (category, callback) => async (dispatch, getState) => {
+  callback("Creating category.", "info");
+  await createCategory(category)
+    .then(({ data }) => {
+      dispatch(CategorySlice.actions.setCategories(data));
+      callback("Add category successful!!!", "success");
+    })
+    .catch((e) => {
+      callback("Something goes wrong!!!", "error");
+    });
+};
+
+export const update = (category, callback) => async (dispatch, getState) => {
+  callback("Updating category.", "info");
+  await updateCategory(category)
+    .then(({ data }) => {
+      dispatch(CategorySlice.actions.setCategoryByCacheId(data));
+      callback("Update category successful!!!", "success");
+    })
+    .catch((e) => {
+      callback("Something goes wrong!!!", "error");
+    });
 };
 
 export default CategorySlice;

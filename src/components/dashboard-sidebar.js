@@ -26,11 +26,6 @@ const items = [
     title: "Dashboard",
   },
   {
-    href: "/customers",
-    icon: <UsersIcon fontSize="small" />,
-    title: "Customers",
-  },
-  {
     href: "/orders",
     icon: <AssignmentIcon fontSize="small" />,
     title: "Orders",
@@ -44,16 +39,6 @@ const items = [
     href: "/products",
     icon: <ShoppingBagIcon fontSize="small" />,
     title: "Products",
-  },
-  {
-    href: "/account",
-    icon: <UserIcon fontSize="small" />,
-    title: "Account",
-  },
-  {
-    href: "/settings",
-    icon: <CogIcon fontSize="small" />,
-    title: "Settings",
   },
 ];
 

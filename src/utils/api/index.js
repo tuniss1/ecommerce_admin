@@ -4,7 +4,7 @@ const baseUrl = process.env.NEXT_PUBLIC_HOST_API;
 
 export const signIn = async (values) => {
   return await axios
-    .post(`${baseUrl}/api/user/login`, values)
+    .post(`${baseUrl}/api/user/loginAdmin`, values)
     .then((res) => {
       return res.data;
     })
@@ -13,7 +13,7 @@ export const signIn = async (values) => {
 
 export const signUp = async (values) => {
   return await axios
-    .post(`${baseUrl}/api/user/createUser`, values)
+    .post(`${baseUrl}/api/user/createAdmin`, values)
     .then((res) => {
       return res.data;
     })
@@ -122,6 +122,15 @@ export const deleteCategory = async (values) => {
 export const getCategoryList = async (params) => {
   return await axios
     .get(`${baseUrl}/api/category/list`, { params: params })
+    .then((res) => {
+      return res.data;
+    })
+    .catch((e) => console.log(e));
+};
+
+export const getCategoryDetail = async (values) => {
+  return await axios
+    .post(`${baseUrl}/api/category/detail`, values)
     .then((res) => {
       return res.data;
     })

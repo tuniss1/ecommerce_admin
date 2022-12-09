@@ -20,12 +20,14 @@ import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import { SeverityPill } from "../severity-pill";
 import { ORDER_STATUS } from "src/utils/constant";
 import DoneIcon from "@mui/icons-material/Done";
+import EditIcon from "@mui/icons-material/Edit";
 import EastIcon from "@mui/icons-material/East";
 import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
 import { updateOrder } from "src/utils/api";
 import { useState } from "react";
 import { useSnackbar } from "notistack";
+import Link from "next/link";
 
 export const LatestOrders = ({ latestOrders, ...rest }) => {
   const [ordersList, setOrdersList] = useState(latestOrders);
@@ -56,20 +58,8 @@ export const LatestOrders = ({ latestOrders, ...rest }) => {
               <TableRow>
                 <TableCell>Order Ref</TableCell>
                 <TableCell>Customer</TableCell>
-                <TableCell sortDirection="desc" sx={{ textAlign: "center" }}>
-                  <Tooltip enterDelay={300} title="Sort">
-                    <TableSortLabel active direction="desc">
-                      Total cost
-                    </TableSortLabel>
-                  </Tooltip>
-                </TableCell>
-                <TableCell sortDirection="desc" sx={{ textAlign: "center" }}>
-                  <Tooltip enterDelay={300} title="Sort">
-                    <TableSortLabel active direction="desc">
-                      Date
-                    </TableSortLabel>
-                  </Tooltip>
-                </TableCell>
+                <TableCell sx={{ textAlign: "center" }}>Total cost</TableCell>
+                <TableCell sx={{ textAlign: "center" }}>Date</TableCell>
                 <TableCell sx={{ textAlign: "center" }}>Status</TableCell>
                 <TableCell sx={{ textAlign: "right", px: 4 }}>Action</TableCell>
               </TableRow>
@@ -124,11 +114,20 @@ export const LatestOrders = ({ latestOrders, ...rest }) => {
                     ) : (
                       <></>
                     )}
-                    <Tooltip enterDelay={300} title={loading ? "Processing" : "Detail"}>
-                      <IconButton color="info" disabled={loading}>
-                        <EastIcon fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
+                    <Link href={`/orders/${order._id}/edit`}>
+                      <Tooltip enterDelay={300} title="Edit">
+                        <IconButton color="info">
+                          <EditIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </Link>
+                    <Link href={`/orders/${order._id}`}>
+                      <Tooltip enterDelay={300} title="Detail">
+                        <IconButton color="info">
+                          <EastIcon fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </Link>
                   </TableCell>
                 </TableRow>
               ))}
@@ -143,14 +142,16 @@ export const LatestOrders = ({ latestOrders, ...rest }) => {
           p: 2,
         }}
       >
-        <Button
-          color="primary"
-          endIcon={<ArrowRightIcon fontSize="small" />}
-          size="small"
-          variant="text"
-        >
-          View all
-        </Button>
+        <Link href="/orders">
+          <Button
+            color="primary"
+            endIcon={<ArrowRightIcon fontSize="small" />}
+            size="small"
+            variant="text"
+          >
+            View all
+          </Button>
+        </Link>
       </Box>
     </Card>
   );

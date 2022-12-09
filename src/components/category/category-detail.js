@@ -4,7 +4,7 @@ import { Formik } from "formik";
 import { useRouter } from "next/router";
 import { useSnackbar } from "notistack";
 import { useDispatch } from "react-redux";
-import { createProduct } from "src/store/reducers/productSlice";
+import { create as createCategory, update } from "src/store/reducers/categorySlice";
 import * as Yup from "yup";
 import SaveCancelOps from "../save-cancel-ops";
 
@@ -26,6 +26,13 @@ const CategoryDetailView = ({ category, mode, handleDelete }) => {
         }
       : category;
 
+  const handleSnackbar = (message, severity) => {
+    enqueueSnackbar(message, { variant: severity });
+    if (severity === "success") {
+      router.push("/categories");
+    }
+  };
+
   return (
     <Formik
       validationSchema={CATEGORY_SCHEMA}
@@ -36,16 +43,11 @@ const CategoryDetailView = ({ category, mode, handleDelete }) => {
         try {
           if (mode === 0) {
             // create
-            dispatch(
-              createProduct(values, (message, severity) => {
-                enqueueSnackbar(message, { variant: severity });
-                if (severity === "success") {
-                  router.push("/products");
-                }
-              })
-            );
+            dispatch(createCategory(values, handleSnackbar));
           } else if (mode === 2) {
             router.push(router.asPath + "/edit");
+          } else {
+            dispatch(update(values, handleSnackbar));
           }
         } catch (e) {
           console.log(e);
@@ -56,7 +58,7 @@ const CategoryDetailView = ({ category, mode, handleDelete }) => {
     >
       {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting }) => (
         <form className="form-wrapper" encType="multipart/form-data" onSubmit={handleSubmit}>
-          <Container sx={{ pb: 4 }} maxWidth={true}>
+          <Container sx={{ pb: 4 }}>
             <Card>
               <CardHeader title="Basic information" />
               <Divider />

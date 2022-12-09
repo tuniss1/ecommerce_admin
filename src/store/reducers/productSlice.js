@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { deleteObject, getDownloadURL, uploadBytes } from "firebase/storage";
 import { imageRef } from "src/lib/firebase";
-import { createProduct as BEcreateProduct, getProductList } from "src/utils/api";
+import { createProduct as BEcreateProduct, getProductList, updateProduct } from "src/utils/api";
 
 export const initialState = {
   products: {},
@@ -60,7 +60,9 @@ export const fetchProducts = (queries, setLoading) => async (dispatch, getState)
   const res = await getProductList(queries).then(({ data }) => data.listRoom);
   const products = {};
   for (const product of res.data) {
-    if (!productSlice[product._id]) products[product._id] = product;
+    console.log("fetch");
+    console.log(product._id, productSlice);
+    if (!productSlice[product._id]) products[product._id] = { ...product };
   }
 
   dispatch(ProductSlice.actions.setProducts(products));
@@ -90,9 +92,11 @@ export const createProduct = (product, callback) => async (dispatch, getState) =
       promisesImgToDel.push(deleteObject(storageImgRef));
     }
     if (!image.isNew && !image.isDeleted)
-      imageToSaveLst.push({
-        url: image.url,
-      });
+      if (image.id) {
+        dataToHold.push({ id: image.id, url: image.url, ref: image.storageUrl });
+      } else {
+        dataToHold.push({ url: image.url });
+      }
     if (image.isNew && !image.isDeleted) {
       promisesImgToAdd.push(
         uploadBytes(storageImgRef, image.file).then(async () => {
@@ -113,7 +117,7 @@ export const createProduct = (product, callback) => async (dispatch, getState) =
     });
   await Promise.all(promisesImgToAdd)
     .then(() => {
-      console.log("add all successful");
+      console.log("add all images successful");
     })
     .catch((e) => {
       callback("Something goes wrong!!!", "error");
@@ -123,6 +127,59 @@ export const createProduct = (product, callback) => async (dispatch, getState) =
   const res = await BEcreateProduct({ ...product, images: dataToHold }).then(({ data }) => data);
   dispatch(ProductSlice.actions.setProducts(res));
   callback("Add product successful!!!", "success");
+};
+
+export const update = (product, callback) => async (dispatch, getState) => {
+  console.log("update");
+  const images = product.images;
+  const promisesImgToDel = [];
+  const promisesImgToAdd = [];
+
+  const dataToHold = [];
+
+  for (const image of images) {
+    const storageUrl = image.ref ? image.ref : `public/product/${image.id}${image.format}`;
+    const storageImgRef = imageRef(storageUrl);
+
+    if (image.isDeleted && !image.isSubmitDeleted) {
+      promisesImgToDel.push(deleteObject(storageImgRef));
+    }
+    if (!image.isNew && !image.isDeleted)
+      if (image.id) {
+        dataToHold.push({ id: image.id, url: image.url, ref: image.storageUrl });
+      } else {
+        dataToHold.push({ url: image.url });
+      }
+    if (image.isNew && !image.isDeleted) {
+      promisesImgToAdd.push(
+        uploadBytes(storageImgRef, image.file).then(async () => {
+          await getDownloadURL(storageImgRef).then((value) => {
+            dataToHold.push({ id: image.id, url: value, ref: storageUrl });
+          });
+        })
+      );
+    }
+  }
+  await Promise.all(promisesImgToDel)
+    .then(() => {
+      console.log("delete all successful");
+    })
+    .catch((e) => {
+      callback("Something goes wrong!!!", "error");
+      console.log("error" + e);
+    });
+  await Promise.all(promisesImgToAdd)
+    .then(() => {
+      console.log("add all images successful");
+    })
+    .catch((e) => {
+      callback("Something goes wrong!!!", "error");
+      console.log("error" + e);
+    });
+
+  const res = await updateProduct({ ...product, images: dataToHold }).then(({ data }) => data);
+  dispatch(ProductSlice.actions.setProductByCacheId(res));
+  callback("Update product successful!!!", "success");
 };
 
 export default ProductSlice;

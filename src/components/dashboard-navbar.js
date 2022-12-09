@@ -1,13 +1,23 @@
 import { useRef, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "@emotion/styled";
-import { AppBar, Avatar, Badge, Box, IconButton, Toolbar, Tooltip } from "@mui/material";
+import {
+  AppBar,
+  Avatar,
+  Badge,
+  Box,
+  IconButton,
+  Toolbar,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import { Bell as BellIcon } from "../icons/bell";
 import { UserCircle as UserCircleIcon } from "../icons/user-circle";
 import { Users as UsersIcon } from "../icons/users";
 import { AccountPopover } from "./account-popover";
+import { useSelector } from "react-redux";
 
 const DashboardNavbarRoot = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.paper,
@@ -18,6 +28,7 @@ export const DashboardNavbar = (props) => {
   const { onSidebarOpen, ...other } = props;
   const settingsRef = useRef(null);
   const [openAccountPopover, setOpenAccountPopover] = useState(false);
+  const UserSlice = useSelector((state) => state.user);
 
   return (
     <>
@@ -52,22 +63,28 @@ export const DashboardNavbar = (props) => {
             <MenuIcon fontSize="small" />
           </IconButton>
           <Box sx={{ flexGrow: 1 }} />
-          <Avatar
+          <Box
             onClick={() => setOpenAccountPopover(true)}
-            ref={settingsRef}
-            sx={{
-              cursor: "pointer",
-              height: 40,
-              width: 40,
-              ml: 1,
-            }}
-            src="/static/images/avatars/avatar_1.png"
+            sx={{ display: "flex", alignItems: "center", cursor: "pointer" }}
           >
-            <UserCircleIcon fontSize="small" />
-          </Avatar>
+            <Avatar
+              ref={settingsRef}
+              sx={{
+                height: 40,
+                width: 40,
+                ml: 1,
+              }}
+            >
+              <UserCircleIcon fontSize="small" />
+            </Avatar>
+            <Typography variant="h6" ml={2} color="black">
+              {UserSlice.id ? UserSlice.firstName + " " + UserSlice.lastName : "Not login yet!"}
+            </Typography>
+          </Box>
         </Toolbar>
       </DashboardNavbarRoot>
       <AccountPopover
+        user={UserSlice}
         anchorEl={settingsRef.current}
         open={openAccountPopover}
         onClose={() => setOpenAccountPopover(false)}
