@@ -20,6 +20,15 @@ export const signUp = async (values) => {
     .catch((e) => console.log(e));
 };
 
+export const budget = async () => {
+  return await axios
+    .get(`${baseUrl}/api/order/budget`)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((e) => console.log(e));
+};
+
 export const createProduct = async (values) => {
   return await axios
     .post(`${baseUrl}/api/product/create`, values)

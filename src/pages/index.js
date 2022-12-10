@@ -7,11 +7,19 @@ import { Sales } from "../components/dashboard/sales";
 import { TasksProgress } from "../components/dashboard/tasks-progress";
 import { TotalCustomers } from "../components/dashboard/total-customers";
 import { TotalProfit } from "../components/dashboard/total-profit";
-import { TrafficByDevice } from "../components/dashboard/traffic-by-device";
 import { DashboardLayout } from "../components/dashboard-layout";
-import { getOrders, getProduct } from "src/utils/api";
+import { budget, getOrders, getProduct } from "src/utils/api";
 
-const Page = ({ latestOrders, latestProducts }) => {
+const Page = ({ latestOrders, latestProducts, dashboardChart }) => {
+  const barchartData = dashboardChart;
+
+  const labels = [];
+  const data = [];
+  console.log(dashboardChart);
+  dashboardChart.barData.map(({ label, budget, time }) => {
+    labels.push(label);
+    data.push(budget);
+  });
   return (
     <>
       <Head>
@@ -26,17 +34,20 @@ const Page = ({ latestOrders, latestProducts }) => {
       >
         <Container maxWidth={false}>
           <Grid container spacing={3}>
+            <Grid item xl={3} lg={3} sm={6} xs={12}>
+              <TotalCustomers count={dashboardChart.orderMonth} />
+            </Grid>
             <Grid item lg={3} sm={6} xl={3} xs={12}>
-              <Budget />
+              <Budget budget={dashboardChart.budgetMonth} />
             </Grid>
             <Grid item xl={3} lg={3} sm={6} xs={12}>
-              <TotalCustomers />
+              <TasksProgress count={dashboardChart.total} />
             </Grid>
             <Grid item xl={3} lg={3} sm={6} xs={12}>
-              <TasksProgress />
+              <TotalProfit sx={{ height: "100%" }} budget={dashboardChart.totalBudget} />
             </Grid>
-            <Grid item xl={3} lg={3} sm={6} xs={12}>
-              <TotalProfit sx={{ height: "100%" }} />
+            <Grid item lg={12} md={12} xl={12} xs={12}>
+              <Sales labels={labels} data={data} />
             </Grid>
             <Grid item lg={12} md={12} xl={9} xs={12}>
               <LatestProducts latestProducts={latestProducts} />
@@ -53,6 +64,8 @@ const Page = ({ latestOrders, latestProducts }) => {
 
 export async function getStaticProps(context) {
   try {
+    const dashboardChart = await budget().then(({ data }) => data);
+
     const latestProducts = await getProduct({
       page: 1,
       limit: 6,
@@ -71,11 +84,12 @@ export async function getStaticProps(context) {
       props: {
         latestOrders,
         latestProducts,
+        dashboardChart,
       },
     };
   } catch (e) {}
   return {
-    props: { latestOrders: [], latestProducts: [] },
+    props: { latestOrders: [], latestProducts: [], dashboardChart: {} },
   };
 }
 
