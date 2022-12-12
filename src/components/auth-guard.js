@@ -25,6 +25,7 @@ export const AuthGuard = (props) => {
     }
 
     ignore.current = true;
+    console.log(isAuthenticated);
 
     if (!isAuthenticated) {
       console.log("Not authenticated, redirecting");
