@@ -21,19 +21,6 @@ export const AccountPopover = (props) => {
       return;
     }
 
-    // Check if auth has been skipped
-    // From sign-in page we may have set "skip-auth" to "true"
-    // If this has been skipped, then redirect to "sign-in" directly
-    const authSkipped = globalThis.sessionStorage.getItem("skip-auth") === "true";
-    globalThis.sessionStorage.removeItem("init");
-
-    if (authSkipped) {
-      // Cleanup the skip auth state
-      globalThis.sessionStorage.removeItem("skip-auth");
-
-      return;
-    }
-
     try {
       // This can be call inside AuthProvider component, but we do it here for simplicity
       await auth.signOut();

@@ -26,10 +26,7 @@ export const AuthGuard = (props) => {
 
     ignore.current = true;
 
-    const authSkipped = globalThis.sessionStorage.getItem("skip-auth") === "true";
-    const init = globalThis.sessionStorage.getItem("init") === "true";
-
-    if (!isAuthenticated && !authSkipped && init) {
+    if (!isAuthenticated) {
       console.log("Not authenticated, redirecting");
       router
         .replace({

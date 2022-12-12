@@ -79,17 +79,6 @@ const Register = () => {
         }}
       >
         <Container maxWidth="sm">
-          <Button
-            component="a"
-            startIcon={<ArrowBackIcon fontSize="small" />}
-            onClick={() => {
-              globalThis.sessionStorage.setItem("skip-auth", "true");
-              globalThis.sessionStorage.setItem("init", "false");
-              Router.push("/");
-            }}
-          >
-            Dashboard
-          </Button>
           <form onSubmit={formik.handleSubmit}>
             <Box sx={{ my: 3 }}>
               <Typography color="textPrimary" variant="h4">

@@ -18,8 +18,8 @@ const Login = () => {
 
   const formik = useFormik({
     initialValues: {
-      email: "demo@devias.io",
-      password: "Password123",
+      email: "",
+      password: "",
     },
     validationSchema: Yup.object({
       email: Yup.string().email("Must be a valid email").max(255).required("Email is required"),
@@ -64,17 +64,6 @@ const Login = () => {
         }}
       >
         <Container maxWidth="sm">
-          <Button
-            component="a"
-            startIcon={<ArrowBackIcon fontSize="small" />}
-            onClick={() => {
-              globalThis.sessionStorage.setItem("skip-auth", "true");
-              globalThis.sessionStorage.setItem("init", "false");
-              Router.push("/");
-            }}
-          >
-            Dashboard
-          </Button>
           <form onSubmit={formik.handleSubmit}>
             <Box sx={{ my: 3 }}>
               <Typography color="textPrimary" variant="h4">

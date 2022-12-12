@@ -78,7 +78,7 @@ export const DashboardNavbar = (props) => {
               <UserCircleIcon fontSize="small" />
             </Avatar>
             <Typography variant="h6" ml={2} color="black">
-              {UserSlice.id ? UserSlice.firstName + " " + UserSlice.lastName : "Not login yet!"}
+              {UserSlice.id ? UserSlice.firstName + " " + UserSlice.lastName : ""}
             </Typography>
           </Box>
         </Toolbar>

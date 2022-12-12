@@ -9,17 +9,67 @@ import { TotalCustomers } from "../components/dashboard/total-customers";
 import { TotalProfit } from "../components/dashboard/total-profit";
 import { DashboardLayout } from "../components/dashboard-layout";
 import { budget, getOrders, getProduct } from "src/utils/api";
+import { useEffect, useRef, useState } from "react";
 
-const Page = ({ latestOrders, latestProducts, dashboardChart }) => {
-  const barchartData = dashboardChart;
+const Page = ({}) => {
+  const [dashboardChart, setDashboardChart] = useState({});
+
+  const [latestProducts, setLatestProducts] = useState([]);
+  const [latestOrders, setLatestOrders] = useState([]);
+  const firstInit = useRef(false);
+
+  useEffect(() => {
+    if (firstInit.current) return;
+    firstInit.current = true;
+
+    const fetchData = async () => {
+      await budget()
+        .then(({ data }) => {
+          setDashboardChart({ ...data });
+        })
+        .catch((e) => console.log(e));
+
+      await getProduct({
+        page: 1,
+        limit: 6,
+        minPrice: null,
+        maxPrice: null,
+        sort: "",
+      }).then(({ data }) => {
+        console.log(data);
+        setLatestProducts(data.listRoom.data);
+      });
+
+      await getOrders({
+        page: 1,
+        limit: 6,
+        sort: "desc",
+      }).then(({ data }) => {
+        setLatestOrders(data.listRoom.data);
+      });
+    };
+
+    fetchData();
+
+    return () => {
+      if (firstInit.current) return;
+      firstInit.current = true;
+      fetchData();
+    };
+  }, []);
+
+  console.log(dashboardChart);
 
   const labels = [];
   const data = [];
-  console.log(dashboardChart);
-  dashboardChart.barData.map(({ label, budget, time }) => {
-    labels.push(label);
-    data.push(budget);
-  });
+
+  if (dashboardChart.barData) {
+    dashboardChart.barData.map(({ label, budget, time }) => {
+      labels.push(label);
+      data.push(budget);
+    });
+  }
+
   return (
     <>
       <Head>
@@ -62,24 +112,8 @@ const Page = ({ latestOrders, latestProducts, dashboardChart }) => {
   );
 };
 
-export async function getStaticProps(context) {
+export async function getServerSideProps(context) {
   try {
-    const dashboardChart = await budget().then(({ data }) => data);
-
-    const latestProducts = await getProduct({
-      page: 1,
-      limit: 6,
-      minPrice: null,
-      maxPrice: null,
-      sort: "",
-    }).then(({ data }) => data.listRoom.data);
-
-    const latestOrders = await getOrders({
-      page: 1,
-      limit: 6,
-      sort: "desc",
-    }).then(({ data }) => data.listRoom.data);
-
     return {
       props: {
         latestOrders,
@@ -87,7 +121,9 @@ export async function getStaticProps(context) {
         dashboardChart,
       },
     };
-  } catch (e) {}
+  } catch (e) {
+    console.log(e);
+  }
   return {
     props: { latestOrders: [], latestProducts: [], dashboardChart: {} },
   };
