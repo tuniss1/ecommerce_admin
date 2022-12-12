@@ -81,17 +81,6 @@ export const CategoryListResults = ({
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={isSelectedAll}
-                    color="primary"
-                    indeterminate={
-                      selectedCategoryIds.length > 0 &&
-                      selectedCategoryIds.length < categories.length
-                    }
-                    onChange={handleSelectAll}
-                  />
-                </TableCell>
                 <TableCell sx={{ minWidth: 250 }}>Category Ref</TableCell>
                 <TableCell sx={{ minWidth: 300 }}>Name</TableCell>
 
@@ -128,15 +117,6 @@ export const CategoryListResults = ({
                             selectedCategoryIds.indexOf(category._id) !== -1 || isSelectedAll
                           }
                         >
-                          <TableCell padding="checkbox">
-                            <Checkbox
-                              checked={
-                                selectedCategoryIds.indexOf(category._id) !== -1 || isSelectedAll
-                              }
-                              onChange={(event) => handleSelectOne(event, category._id)}
-                              value="true"
-                            />
-                          </TableCell>
                           <TableCell>{category._id}</TableCell>
                           <TableCell>{category.name}</TableCell>
                           <TableCell sx={{ textAlign: "center" }}>{category.quantity}</TableCell>

@@ -9,6 +9,7 @@ import {
   Typography,
   Link,
 } from "@mui/material";
+import Router from "next/router";
 import { useState } from "react";
 import { Download as DownloadIcon } from "../../icons/download";
 import { Search as SearchIcon } from "../../icons/search";
@@ -39,19 +40,12 @@ export const CategoryListToolbar = ({ isSelected, setSearchField, setOpen, ...re
             Export
           </Button>
           <Button
-            color="error"
+            color="primary"
             variant="contained"
-            sx={{ mr: 1 }}
-            disabled={!isSelected}
-            onClick={() => setOpen(true)}
+            onClick={() => Router.push("/categories/create")}
           >
-            Delete
+            Add category
           </Button>
-          <Link href="/categories/create">
-            <Button color="primary" variant="contained">
-              Add category
-            </Button>
-          </Link>
         </Box>
       </Box>
       {/* <Box sx={{ mt: 3 }}>

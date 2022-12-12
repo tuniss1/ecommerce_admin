@@ -43,6 +43,7 @@ const Page = ({}) => {
         page: 1,
         limit: 6,
         sort: "desc",
+        status: -1,
       }).then(({ data }) => {
         setLatestOrders(data.listRoom.data);
       });

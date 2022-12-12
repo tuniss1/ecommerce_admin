@@ -47,7 +47,7 @@ export const OrderListResults = ({ orders, ...rest }) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      dispatch(fetchOrders({ page: page, limit: limit, sort: "desc" }, setLoading));
+      dispatch(fetchOrders({ page: page, limit: limit, sort: "desc", status: -1 }, setLoading));
     };
 
     fetchData();

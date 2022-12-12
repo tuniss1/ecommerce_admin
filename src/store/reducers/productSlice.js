@@ -22,6 +22,14 @@ const ProductSlice = createSlice({
     setMetaData(state, action) {
       state.meta_data = action.payload;
     },
+    setList(state, action) {
+      state.products = { ...action.payload };
+    },
+    removeProductByCachId(state, action) {
+      const temp = { ...state.products };
+      delete temp[action.payload];
+      state.products = { ...temp };
+    },
   },
 });
 
@@ -122,7 +130,7 @@ export const createProduct = (product, callback) => async (dispatch, getState) =
     });
 
   const res = await BEcreateProduct({ ...product, images: dataToHold }).then(({ data }) => data);
-  dispatch(ProductSlice.actions.setProducts(res));
+  dispatch(ProductSlice.actions.setProductByCacheId(res));
   callback("Add product successful!!!", "success");
 };
 
@@ -177,6 +185,10 @@ export const update = (product, callback) => async (dispatch, getState) => {
   const res = await updateProduct({ ...product, images: dataToHold }).then(({ data }) => data);
   dispatch(ProductSlice.actions.setProductByCacheId(res));
   callback("Update product successful!!!", "success");
+};
+
+export const remove = (id) => async (dispatch, getState) => {
+  dispatch(ProductSlice.actions.removeProductByCachId(id));
 };
 
 export default ProductSlice;

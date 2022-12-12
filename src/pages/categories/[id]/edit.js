@@ -4,7 +4,7 @@ import { DashboardLayout } from "src/components/dashboard-layout";
 
 import ComponentDialog from "src/components/dialog";
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { deleteCategory, getCategoryDetail } from "src/utils/api";
 import { useRouter } from "next/router";
 import CategoryDetailView from "src/components/category/category-detail";

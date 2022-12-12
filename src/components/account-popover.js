@@ -28,6 +28,10 @@ export const AccountPopover = (props) => {
       // Update Auth Context state
       authContext.signOut();
       dispatch(resetUser());
+      Router.push({
+        pathname: "/login",
+        query: Router.asPath !== "/" ? { continueUrl: Router.asPath } : undefined,
+      }).catch(console.error);
     } catch (err) {
       console.error(err);
     }

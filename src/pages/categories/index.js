@@ -3,10 +3,11 @@ import { Box, Container } from "@mui/material";
 import { DashboardLayout } from "../../components/dashboard-layout";
 import ComponentDialog from "src/components/dialog";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { deleteCategory, truncateCategory } from "src/utils/api";
 import { CategoryListResults } from "src/components/category/category-list-results";
 import { CategoryListToolbar } from "src/components/category/category-list-toolbar";
+import { removeList } from "src/store/reducers/categorySlice";
 
 const Page = () => {
   const [open, setOpen] = useState(false);
@@ -16,6 +17,7 @@ const Page = () => {
 
   const categorySlice = useSelector((state) => state.categories);
   const categories = Object.entries(categorySlice.categories);
+  const dispatch = useDispatch();
 
   const handleSelectAll = (event) => {
     if (event.target.checked) {
@@ -50,7 +52,8 @@ const Page = () => {
       await truncateCategory().then((res) => console.log(res.status));
     } else {
       await deleteCategory({ _id: selectedCategoryIds }).then((res) => {
-        console.log(res.status);
+        console.log(res);
+        dispatch(removeList(selectedCategoryIds));
       });
     }
     setOpen(false);

@@ -20,6 +20,14 @@ const CategorySlice = createSlice({
     setMetaData(state, action) {
       state.meta_data = action.payload;
     },
+    removeCategoryByCachId(state, action) {
+      const temp = { ...state.categories };
+      delete temp[action.payload];
+      state.categories = { ...temp };
+    },
+    setFullCategories(state, action) {
+      state.categories = { ...action.payload.cates };
+    },
   },
 });
 
@@ -75,7 +83,7 @@ export const create = (category, callback) => async (dispatch, getState) => {
   callback("Creating category.", "info");
   await createCategory(category)
     .then(({ data }) => {
-      dispatch(CategorySlice.actions.setCategories(data));
+      dispatch(CategorySlice.actions.setCategoryByCacheId(data));
       callback("Add category successful!!!", "success");
     })
     .catch((e) => {
@@ -93,6 +101,22 @@ export const update = (category, callback) => async (dispatch, getState) => {
     .catch((e) => {
       callback("Something goes wrong!!!", "error");
     });
+};
+
+export const remove = (id) => async (dispatch, getState) => {
+  dispatch(CategorySlice.actions.removeCategoryByCachId(id));
+};
+
+export const removeList = (ids) => async (dispatch, getState) => {
+  const cates = { ...getState().categories.categories };
+  let count = 0;
+  for (const id of ids) {
+    if (id === cates[id]._id) {
+      count++;
+      delete cates[id];
+    }
+  }
+  dispatch(CategorySlice.actions.setFullCategories({ cates, count }));
 };
 
 export default CategorySlice;

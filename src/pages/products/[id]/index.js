@@ -3,10 +3,11 @@ import { Box, Container, Typography } from "@mui/material";
 import { DashboardLayout } from "src/components/dashboard-layout";
 import ComponentDialog from "src/components/dialog";
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { deleteProduct, getProductDetail } from "src/utils/api";
 import { useRouter } from "next/router";
 import ProductDetailView from "src/components/product/product-detail";
+import { remove } from "src/store/reducers/productSlice";
 
 const Page = () => {
   const router = useRouter();
@@ -15,6 +16,8 @@ const Page = () => {
   const productSlice = useSelector((state) => state.products);
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,6 +40,7 @@ const Page = () => {
   const handleYes = async () => {
     await deleteProduct({ _id: [product._id] }).then((res) => {
       console.log(res.status);
+      dispatch(remove(product._id));
     });
 
     setOpen(false);

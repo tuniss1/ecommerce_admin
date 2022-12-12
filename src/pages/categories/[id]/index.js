@@ -3,10 +3,11 @@ import { Box, Container, Typography } from "@mui/material";
 import { DashboardLayout } from "src/components/dashboard-layout";
 import ComponentDialog from "src/components/dialog";
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { deleteCategory, getCategoryDetail } from "src/utils/api";
 import { useRouter } from "next/router";
 import CategoryDetailView from "src/components/category/category-detail";
+import { remove } from "src/store/reducers/categorySlice";
 
 const Page = () => {
   const router = useRouter();
@@ -15,6 +16,7 @@ const Page = () => {
   const categorySlice = useSelector((state) => state.categories);
   const [category, setCategory] = useState(null);
   const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,6 +39,7 @@ const Page = () => {
   const handleYes = async () => {
     await deleteCategory({ _id: [category._id] }).then((res) => {
       console.log(res.status);
+      dispatch(remove(category._id));
     });
 
     setOpen(false);
