@@ -134,7 +134,6 @@ const ProductDetailView = ({ product, mode, handleDelete }) => {
       validationSchema={PRODUCT_SCHEMA}
       initialValues={initialValues}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
-        console.log("click");
         setSubmitting(true);
         try {
           if (mode === 0) {

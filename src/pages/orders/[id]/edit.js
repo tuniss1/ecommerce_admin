@@ -29,8 +29,6 @@ const Page = () => {
     fetchData();
   }, [router]);
 
-  console.log(order);
-
   const DetailResultsProps = {
     order,
     mode: 1,

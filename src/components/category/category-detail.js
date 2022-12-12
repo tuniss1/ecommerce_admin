@@ -38,7 +38,6 @@ const CategoryDetailView = ({ category, mode, handleDelete }) => {
       validationSchema={CATEGORY_SCHEMA}
       initialValues={initialValues}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
-        console.log("click");
         setSubmitting(true);
         try {
           if (mode === 0) {

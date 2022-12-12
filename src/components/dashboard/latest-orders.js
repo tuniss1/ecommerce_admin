@@ -33,8 +33,7 @@ export const LatestOrders = ({ latestOrders, ...rest }) => {
   const [ordersList, setOrdersList] = useState(latestOrders);
   const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
-  console.log("latestOrders");
-  console.log(ordersList);
+
   const handleUpdateStatus = async (orderId, userId, status, idx) => {
     enqueueSnackbar("Updating order!", { variant: "info" });
     await updateOrder({ orderId, userId, status })

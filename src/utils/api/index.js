@@ -1,7 +1,6 @@
 import axios from "axios";
 
 const baseUrl = process.env.NEXT_PUBLIC_HOST_API;
-console.log(baseUrl);
 
 export const signIn = async (values) => {
   return await axios

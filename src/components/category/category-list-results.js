@@ -41,7 +41,6 @@ export const CategoryListResults = ({
     quantity: null,
     createdAt: null,
   });
-  // console.log(categories);
 
   useEffect(() => {
     const fetchData = async () => {

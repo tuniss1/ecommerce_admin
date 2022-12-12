@@ -36,7 +36,6 @@ const Page = ({}) => {
         maxPrice: null,
         sort: "",
       }).then(({ data }) => {
-        console.log(data);
         setLatestProducts(data.listRoom.data);
       });
 
@@ -45,7 +44,6 @@ const Page = ({}) => {
         limit: 6,
         sort: "desc",
       }).then(({ data }) => {
-        console.log(data);
         setLatestOrders(data.listRoom.data);
       });
     };
@@ -58,8 +56,6 @@ const Page = ({}) => {
       fetchData();
     };
   }, []);
-
-  console.log(dashboardChart);
 
   const labels = [];
   const data = [];
@@ -92,7 +88,7 @@ const Page = ({}) => {
               <Budget budget={dashboardChart.budgetMonth} />
             </Grid>
             <Grid item xl={3} lg={3} sm={6} xs={12}>
-              <TasksProgress count={dashboardChart.total} />
+              <TasksProgress sx={{ height: "100%" }} count={dashboardChart.total} />
             </Grid>
             <Grid item xl={3} lg={3} sm={6} xs={12}>
               <TotalProfit sx={{ height: "100%" }} budget={dashboardChart.totalBudget} />

@@ -60,8 +60,6 @@ export const fetchProducts = (queries, setLoading) => async (dispatch, getState)
   const res = await getProductList(queries).then(({ data }) => data.listRoom);
   const products = {};
   for (const product of res.data) {
-    console.log("fetch");
-    console.log(product._id, productSlice);
     if (!productSlice[product._id]) products[product._id] = { ...product };
   }
 
@@ -76,7 +74,6 @@ export const fetchProducts = (queries, setLoading) => async (dispatch, getState)
 };
 
 export const createProduct = (product, callback) => async (dispatch, getState) => {
-  console.log("create");
   const images = product.images;
   const promisesImgToDel = [];
   const promisesImgToAdd = [];

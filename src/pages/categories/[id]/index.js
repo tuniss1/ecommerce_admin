@@ -34,8 +34,6 @@ const Page = () => {
     fetchData();
   }, [router]);
 
-  console.log(category);
-
   const handleYes = async () => {
     await deleteCategory({ _id: [category._id] }).then((res) => {
       console.log(res.status);

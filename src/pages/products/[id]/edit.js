@@ -35,8 +35,6 @@ const Page = () => {
     fetchData();
   }, [router]);
 
-  console.log(product);
-
   const handleYes = async () => {
     await deleteProduct({ _id: [product._id] }).then((res) => {
       console.log(res.status);

@@ -72,7 +72,6 @@ const OrderDetailView = ({ mode, order }) => {
     <Formik
       initialValues={initialValues}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
-        console.log("click");
         setSubmitting(true);
         try {
           if (mode === 2) {
