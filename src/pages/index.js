@@ -45,6 +45,7 @@ const Page = ({}) => {
         limit: 6,
         sort: "desc",
       }).then(({ data }) => {
+        console.log(data);
         setLatestOrders(data.listRoom.data);
       });
     };
@@ -111,23 +112,6 @@ const Page = ({}) => {
     </>
   );
 };
-
-export async function getServerSideProps(context) {
-  try {
-    return {
-      props: {
-        latestOrders,
-        latestProducts,
-        dashboardChart,
-      },
-    };
-  } catch (e) {
-    console.log(e);
-  }
-  return {
-    props: { latestOrders: [], latestProducts: [], dashboardChart: {} },
-  };
-}
 
 Page.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 

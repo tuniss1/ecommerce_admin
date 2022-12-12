@@ -25,7 +25,7 @@ import EastIcon from "@mui/icons-material/East";
 import CloseIcon from "@mui/icons-material/Close";
 import IconButton from "@mui/material/IconButton";
 import { updateOrder } from "src/utils/api";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSnackbar } from "notistack";
 import Link from "next/link";
 
@@ -33,7 +33,8 @@ export const LatestOrders = ({ latestOrders, ...rest }) => {
   const [ordersList, setOrdersList] = useState(latestOrders);
   const [loading, setLoading] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
-
+  console.log("latestOrders");
+  console.log(ordersList);
   const handleUpdateStatus = async (orderId, userId, status, idx) => {
     enqueueSnackbar("Updating order!", { variant: "info" });
     await updateOrder({ orderId, userId, status })
@@ -47,6 +48,10 @@ export const LatestOrders = ({ latestOrders, ...rest }) => {
         enqueueSnackbar("Update error: " + e, { variant: "error" });
       });
   };
+
+  useEffect(() => {
+    setOrdersList(latestOrders);
+  }, [latestOrders]);
 
   return (
     <Card {...rest}>
